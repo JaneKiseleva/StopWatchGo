@@ -20,8 +20,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        //конфигурация, поиск текста, условие при котором присваивается текущее состояние таймера InstanteState, запуск таймера
         setContentView(R.layout.activity_main);
         textViewTimer = findViewById(R.id.textViewTimer);
         if (savedInstanceState != null) {
@@ -31,23 +29,6 @@ public class MainActivity extends AppCompatActivity {
         }
         runTimer();
     }
-
-/*
-    @Override
-    protected void onStop() {
-        super.onStop();
-        wasRunning = isRunning;
-        isRunning = false;
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        isRunning = wasRunning;
-    }
-*/
-
-    // потеря фокуса активности - два метода переопределить
 
     @Override
     protected void onResume() {
@@ -62,12 +43,9 @@ public class MainActivity extends AppCompatActivity {
         isRunning = false;
     }
 
-
-    //переопределить метод для сохранения текущего состояния, параметр Bundle, вынуть текущее состояние таймера
     @Override
-    protected void onSaveInstanceState(Bundle outState) { //Метод для сохранения текущего состояния активности, в качестве параметра
-        // принимает Bundle - он позволяет объединить разные типы данных в один объект.
-        super.onSaveInstanceState(outState); //переопредилить метод? Обязательно должно быть обращение к родительскому классу
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
         outState.putInt("seconds", seconds);
         outState.putBoolean("isRunning", isRunning);
         outState.putBoolean("wasRunning", wasRunning);
@@ -86,21 +64,20 @@ public class MainActivity extends AppCompatActivity {
         seconds = 0;
     }
 
-    private void runTimer () {
-
-        final Handler handler = new Handler(); //новый объект класса Handler. Дает возможность работы с другими потоками и планировать работу в будущем
-        handler.post(new Runnable() { // КАК можно быстрее вызови данный код (но он вызовется один раз, поэтому используем дальше еще один метод post.Delayed c задержкой в секунду
+    private void runTimer() {
+        final Handler handler = new Handler();
+        handler.post(new Runnable() {
             @Override
             public void run() {
-                int hours = seconds / 3600;  //взяла количество секунд с начала работы таймера
-                int minutes = (seconds % 3600) / 60; //получила количество часов, минут и секунд
+                int hours = seconds / 3600;
+                int minutes = (seconds % 3600) / 60;
                 int secs = seconds % 60;
 
-                String time = String.format(Locale.getDefault(), "%d:%02d:%02d", hours, minutes, secs);  //передать данные в String формат
-                textViewTimer.setText(time); // присвоила текстовому полю  макета
+                String time = String.format(Locale.getDefault(), "%d:%02d:%02d", hours, minutes, secs);
+                textViewTimer.setText(time);
 
                 if (isRunning) {
-                    seconds++; //количество секунд увеличила на единицу
+                    seconds++;
                 }
                 handler.postDelayed(this, 1000);
             }
